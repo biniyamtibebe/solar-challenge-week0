@@ -1,1 +1,4 @@
 .week0
+data/
+*.csv
+*.ipynb_checkpoints/
