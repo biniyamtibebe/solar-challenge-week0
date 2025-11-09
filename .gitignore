@@ -1,4 +1,13 @@
-.week0
+.week0/
+env/
+.weeko/
+ENV/
+env.bak/
+venv.bak/
+
 data/
 *.csv
-*.ipynb_checkpoints/
+*.parquet
+*.xlsx
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
