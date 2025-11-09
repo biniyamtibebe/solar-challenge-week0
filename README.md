@@ -1,6 +1,7 @@
  # solar-challenge-week1
 
 **Overview**
+
 This project is part of the 10 Academy's AIM Week 0 Challenge. The goal is to prepare and analyze solar energy data from multiple countries to support region-ranking and decision-making tasks in renewable energy deployment. The work is divided into structured tasks. This README outlines the steps and deliverables completed for Task 1 and Task 2.
 
 
@@ -22,6 +23,7 @@ This project is part of the 10 Academy's AIM Week 0 Challenge. The goal is to pr
 ## ## ✅ Task 2: Data Profiling, Cleaning & Exploratory Data Analysis (EDA)
 
 ### Objective
+
 To profile, clean, and explore the solar dataset of each country to prepare it for downstream analysis and modeling.
 
 ### Countries Analyzed
@@ -50,7 +52,7 @@ Each country has its own notebook and cleaned dataset stored locally under the `
    - Imputed missing values using median where applicable
    - Exported cleaned datasets to `data/<country>_clean.csv`
 
-  5. **Exploratory Data Analysis (EDA)**
+5. **Exploratory Data Analysis (EDA)**
    - Time series plots of GHI, DNI, DHI, and Tamb
    - Distribution and outlier analysis for sensor and wind readings
    - Correlation matrix heatmaps
