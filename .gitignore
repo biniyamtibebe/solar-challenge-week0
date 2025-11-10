@@ -9,5 +9,3 @@ data/
 *.csv
 *.parquet
 *.xlsx
-.ipynb_checkpoints/
-*/.ipynb_checkpoints/
