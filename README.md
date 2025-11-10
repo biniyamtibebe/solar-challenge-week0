@@ -48,7 +48,7 @@ Each country has its own notebook and cleaned dataset stored locally under the `
    - Flagged columns with more than 5% null values
 
 4. **Data Cleaning**
-- Identified outliers using Z-score method (|Z| > 3)
+   - Identified outliers using Z-score method (|Z| > 3)
    - Imputed missing values using median where applicable
    - Exported cleaned datasets to `data/<country>_clean.csv`
 
@@ -63,4 +63,65 @@ Each country has its own notebook and cleaned dataset stored locally under the `
 6. **Cleaning Impact Analysis**
    - Compared ModA and ModB before and after cleaning
    - Grouped and visualized data based on cleaning flags
+ 
+### ✅ Task 3: Cross-Country Comparison
+**Objective**  
+To synthesize the cleaned datasets from Benin, Sierra Leone, and Togo to identify relative solar potential and key differences across countries.
+
+**Branch**: `compare-countries`  
+**Notebook**: `compare_countries.ipynb`
+
+**Key Steps Performed**  
+- **Data Loading**  
+  - Loaded cleaned CSVs (`data/benin_clean.csv`, `data/sierraleone_clean.csv`, `data/togo_clean.csv`)  
+  - Combined datasets with a 'Country' column for unified analysis  
+- **Metric Comparison**  
+  - Created side-by-side boxplots for GHI, DNI, and DHI, colored by country  
+  - Generated a summary table comparing mean, median, and standard deviation of GHI, DNI, DHI across countries  
+- **Statistical Testing**  
+  - Performed Kruskal-Wallis test on GHI to assess significant differences (p-value reported)  
+- **Key Observations**  
+  - Summarized findings in a markdown cell with 3 bullet points highlighting actionable insights (e.g., highest GHI, variability)  
+- **Bonus Visualization**  
+  - Created a bar chart ranking countries by average GHI 
+- **Git Hygiene**  
+  - Committed changes with message: `Completed Task 3: Cross-country comparison with boxplots, summary table, and statistical testing`  
+  - Ensured `data/` folder remains ignored in `.gitignore`  
+
+**Deliverables**  
+- Notebook: `compare_countries.ipynb`  
+- Summary table CSV: `data/summary_stats.csv`  
+- Visuals: Boxplots and bar chart for GHI, DNI, DHI  
+
+**KPIs Achieved**  
+- Included all three countries in plots  
+- Correctly reported p-values from statistical testing  
+- Provided relevant, actionable insights in markdown  
+- Generated a summary table with mean, median, and standard deviation
+
+----
+
+## Setup Instructions
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/abmoh4219/solar-challenge-week1.git
+   cd solar-challenge-week1
+2. **Set up virtual environment**:
+   ``` bash
+   python -m venv venv
+   source venv/Scripts/activate  # On Windows Git Bash
+   pip install -r requirements.txt
+
+3. **Folder Structure**:
+    ```bash
+    -src/: Source code
+
+    -notebooks/: Jupyter notebooks for EDA
+
+    -tests/: Unit tests
+
+    -scripts/: Utility scripts
+
+    -data/: Data files (ignored in .gitignore)
+
 
