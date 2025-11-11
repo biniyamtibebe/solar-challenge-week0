@@ -65,12 +65,14 @@ Each country has its own notebook and cleaned dataset stored locally under the `
  ---
  
 ### ✅ Task 3: Cross-Country Comparison
+
 **Objective**  
 To synthesize the cleaned datasets from Benin, Sierra Leone, and Togo to identify relative solar potential and key differences across countries.
 
-**Branch**: `compare-countries`  
+---
+**Branch**: `compare-countries` 
 **Notebook**: `compare_countries.ipynb`
-
+___
 **Key Steps Performed**  
 - **Data Loading**  
   - Loaded cleaned CSVs (`data/benin_clean.csv`, `data/sierraleone_clean.csv`, `data/togo_clean.csv`)  
@@ -86,7 +88,9 @@ To synthesize the cleaned datasets from Benin, Sierra Leone, and Togo to identif
   - Created a bar chart ranking countries by average GHI 
 - **Git Hygiene**  
   - Committed changes with message: `Completed Task 3: Cross-country comparison with boxplots, summary table, and statistical testing`  
-  - Ensured `data/` folder remains ignored in `.gitignore`  
+  - Ensured `data/` folder remains ignored in `.gitignore`
+
+  ___
 
 **Deliverables**  
 - Notebook: `compare_countries.ipynb`  
@@ -130,12 +134,13 @@ To synthesize the cleaned datasets from Benin, Sierra Leone, and Togo to identif
 Explore the dashboard here: http://localhost:8503/
 
 **Features**
--Country Selector: Choose from Togo, Benin, or Sierra Leone.
--Interactive Plotly Charts: Includes boxplots and time series visualizations.
--Real-Time Summary Statistics: Instant insights at your fingertips.
--Investment Ranking: Displays countries ranked by mean GHI.
--Strategic Recommendation Panel: Provides actionable insights.
--This dashboard is built with a modular design, complete docstrings, and a professional -UI—catering to the expectations of senior roles.
+
+  -Country Selector: Choose from Togo, Benin, or Sierra Leone.
+  -Interactive Plotly Charts: Includes boxplots and time series visualizations.
+  -Real-Time Summary Statistics: Instant insights at your fingertips.
+  -Investment Ranking: Displays countries ranked by mean GHI.
+  -Strategic Recommendation Panel: Provides actionable insights.
+  -This dashboard is built with a modular design, complete docstrings, and a professional -UI—catering to the expectations of senior roles.
 
 ---
 
