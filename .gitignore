@@ -9,3 +9,4 @@ data/
 *.csv
 *.parquet
 *.xlsx
+* text=auto
