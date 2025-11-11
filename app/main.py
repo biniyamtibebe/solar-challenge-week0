@@ -3,66 +3,198 @@ MoonLight Energy Solutions – Solar Dashboard
 Author: Biniyam Tibebe Solomon
 Analytics Engineer | Economics Graduate
 """
-import streamlit as st
+# app/utils.py
 import pandas as pd
-from utils import load_data, create_boxplot, create_time_series, get_summary_stats
-import plotly.express as px
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+import streamlit as st  
+  # YES
 
-st.set_page_config(page_title="MoonLight Solar", layout="wide")
+# === CONFIG (ONLY ONCE!) ===
+warnings.filterwarnings('ignore')
+sns.set(style="whitegrid", rc={"figure.figsize": (12, 6)})
 
-st.title("MoonLight Energy Solutions")
-st.subheader("Cross-Country Solar Potential Dashboard")
-st.markdown("**Analytics Engineer:** Biniyam Tibebe Solomon | Nov 2025")
 
-# Sidebar
-st.sidebar.header("Controls")
-country = st.sidebar.selectbox("Select Country", ['Togo', 'Benin', 'Sierra Leone'])
-metric = st.sidebar.radio("Metric", ['GHI', 'DNI', 'DHI'])
+def load_clean_country(path: str, country_name: str) -> pd.DataFrame:
+    df = pd.read_csv(path, encoding='latin-1')
+    df['Country'] = country_name
+    return df
 
-# Load data
-with st.spinner(f"Loading {country} data..."):
-    df = load_data(country)
-    df['Country'] = country
 
-st.success(f"Loaded {len(df):,} observations from {country}")
+@st.cache_data
+def load_all_data():
+    try:
+        benin = load_clean_country('../data/benin-malanville.csv', 'Benin')
+        sierraleone = load_clean_country('../data/sierraleone_clean.csv', 'Sierra Leone')
+        togo = load_clean_country('../data/togo_clean.csv', 'Togo')
 
-# Layout
-col1, col2 = st.columns(2)
+        df = pd.concat([benin, sierraleone, togo], ignore_index=True)
 
-with col1:
-    st.plotly_chart(create_boxplot(df, metric), use_container_width=True)
+        df['Country'] = df['Country'].replace({
+            'sierraleone': 'Sierra Leone',
+            'Togo': 'Togo',
+            'Benin': 'Benin'
+        })
 
-with col2:
-    st.plotly_chart(create_time_series(df, metric), use_container_width=True)
+        region_map = {
+            'Benin': 'West Africa',
+            'Sierra Leone': 'West Africa',
+            'Togo': 'West Africa'
+        }
+        df['Region'] = df['Country'].map(region_map)
 
-# Summary stats
-st.markdown("### Summary Statistics")
-st.dataframe(get_summary_stats(df), use_container_width=True)
+        if 'GHI' not in df.columns:
+            ghi_cols = [c for c in df.columns if 'ghi' in c.lower() or 'hunger' in c.lower()]
+            if ghi_cols:
+                df['GHI'] = pd.to_numeric(df[ghi_cols[0]], errors='coerce')
+            else:
+                raise ValueError("No GHI column found")
+        else:
+            df['GHI'] = pd.to_numeric(df['GHI'], errors='coerce')
 
-# Ranking
-st.markdown("### Investment Ranking (Mean GHI)")
-all_data = pd.concat([
-    load_data('Togo').assign(Country='Togo'),
-    load_data('Benin').assign(Country='Benin'),
-    load_data('Sierra Leone').assign(Country='Sierra Leone')
-])
-ranking = all_data.groupby('Country')['GHI'].mean().sort_values(ascending=False)
-fig = px.bar(x=ranking.index, y=ranking.values,
-             text=ranking.values.round(1),
-             color=ranking.index,
-             color_discrete_sequence=['gold', 'silver', '#CD7F32'])
-fig.update_layout(showlegend=False, height=400,
-                  xaxis_title="Country", yaxis_title="Mean GHI (W/m²)")
-st.plotly_chart(fig, use_container_width=True)
+        df = df.dropna(subset=['GHI', 'Country-', 'Region'])
+        return df
 
-# Recommendation
-st.markdown("### Strategic Recommendation")
-st.success("""
-**PRIORITIZE TOGO**  
-→ Highest median GHI (260 W/m²)  
-→ Lowest variability  
-→ Statistically superior (p < 1e-100)  
+    except Exception as e:
+        st.error(f"Data load error: {e}")
+        return pd.DataFrame()
 
-**Next Step:** Deploy 50 MW pilot farm in Lomé, Togo – Q1 2026  
-**Analytics by:** Biniyam Tibebe Solomon
-""")
+
+def create_ghi_boxplot(data, countries):
+    filtered = data[data['Country'].isin(countries)]
+    if filtered.empty:
+        return None
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x='Country', y='GHI', data=filtered, palette="Set2")
+    plt.title('GHI Distribution by Country', fontsize=16)
+    plt.xlabel('Country')
+    plt.ylabel('GHI Score')
+    plt.xticks(rotation=15)
+    return plt.gcf()
+
+
+def get_top_regions_table(data, top_n=5):
+    avg = (data.groupby(['Region', 'Country'])['GHI']
+           .mean()
+           .reset_index()
+           .sort_values('GHI')
+           .head(top_n))
+    avg = avg.rename(columns={'GHI': 'Average GHI'})
+    avg['Average GHI'] = avg['Average GHI'].round(2)
+    return avg
+
+
+# app/main.py
+import streamlit as st
+from utils import load_all_data, create_ghi_boxplot, get_top_regions_table
+import os
+from datetime import datetime
+import pytz
+
+# === CONFIG ===
+st.set_page_config(page_title="West Africa GHI Dashboard", layout="wide")
+
+# === TIME: Ethiopia (EAT) ===
+eat = pytz.timezone('Africa/Addis_Ababa')
+current_time = datetime.now(eat).strftime("%B %d, %Y %I:%M %p EAT")
+st.caption(f"Updated: **{current_time}** | Ethiopia")
+
+# === DATA ===
+data = load_all_data()
+if data.empty:
+    st.stop()
+
+# === HEADER ===
+st.title("West Africa Hunger Index (GHI) Dashboard")
+st.markdown("*Interactive analysis of **Benin**, **Sierra Leone**, and **Togo***")
+
+# === SIDEBAR ===
+st.sidebar.header("Filters")
+selected_countries = st.sidebar.multiselect(
+    "Select Countries",
+    options=sorted(data['Country'].unique()),
+    default=['Benin']
+)
+
+# === 1. BOXPLOT ===
+st.header("GHI Distribution by Country")
+if selected_countries:
+    fig = create_ghi_boxplot(data, selected_countries)
+    if fig:
+        st.pyplot(fig)
+else:
+    st.info("Select countries to view GHI distribution.")
+
+# === 2. INDIVIDUAL GRAPHS ===
+st.markdown("---")
+st.subheader("Country-Specific GHI Trends")
+
+graph_map = {
+    'Benin': 'notebooks/data/benin_graph.png',
+    'Sierra Leone': 'notebooks/data/sierraleone_graph.png',
+    'Togo': 'notebooks/data/togo_graph.png'
+}
+
+shown = False
+cols = st.columns(3)
+col_idx = 0
+
+for country in ['Benin', 'Sierra Leone', 'Togo']:
+    if country in selected_countries and country in graph_map:
+        path = graph_map[country]
+        if os.path.exists(path):
+            with cols[col_idx % 3]:
+                st.image(path, caption=f"{country} GHI Trend", use_column_width=True)
+            col_idx += 1
+            shown = True
+        else:
+            st.warning(f"Missing: `{path}`")
+
+if not shown and selected_countries:
+    st.info("Graphs will appear when image files are available.")
+
+# === 3. COMPARISON GRAPH ===
+st.markdown("---")
+st.subheader("Cross-Country GHI Comparison")
+compare_path = 'notebooks/data/Compare_countries_graph.png'
+if os.path.exists(compare_path):
+    st.image(compare_path, caption="GHI Comparison: Benin vs Sierra Leone vs Togo", use_column_width=True)
+else:
+    st.warning("Comparison graph not found. Expected: `notebooks/data/Compare_countries_graph.png`")
+
+# === 4. TOP REGIONS TABLE ===
+st.markdown("---")
+st.header("Top Performers (Lowest Average GHI)")
+top_table = get_top_regions_table(data, top_n=10)
+st.dataframe(top_table, use_container_width=True)
+
+# === 5. INTERACTIVE FILTER ===
+max_ghi = st.slider(
+    "Filter by Maximum Average GHI",
+    min_value=0.0,
+    max_value=float(data['GHI'].max() or 100),
+    value=30.0,
+    step=0.5
+)
+filtered = top_table[top_table['Average GHI'] <= max_ghi]
+st.dataframe(filtered, use_container_width=True, hide_index=True)
+
+# === 6. DOWNLOAD BUTTON ===
+csv = filtered.to_csv(index=False).encode()
+st.download_button(
+    label="Download Filtered Results (CSV)",
+    data=csv,
+    file_name=f"ghi_top_regions_{datetime.now(eat).strftime('%Y%m%d')}.csv",
+    mime="text/csv",
+    help="Download the current filtered top regions"
+)
+
+# === FOOTER ===
+st.markdown("---")
+st.markdown(
+    """
+    **Data**: Cleaned CSVs (`data/`) | **Visuals**: Matplotlib/Seaborn  
+    **Graphs**: `notebooks/data/*.png` | **Deployed via Streamlit Community Cloud**
+    """
+)

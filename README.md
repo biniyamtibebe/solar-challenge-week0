@@ -35,7 +35,6 @@ Each country has its own notebook and cleaned dataset stored locally under the `
 
 ---
 
-****
 1. **Branch Creation**
    - Created a dedicated branch for each country (e.g., `eda-sirraleone`)
 
@@ -63,6 +62,7 @@ Each country has its own notebook and cleaned dataset stored locally under the `
 6. **Cleaning Impact Analysis**
    - Compared ModA and ModB before and after cleaning
    - Grouped and visualized data based on cleaning flags
+ ---
  
 ### ✅ Task 3: Cross-Country Comparison
 **Objective**  
@@ -124,4 +124,22 @@ To synthesize the cleaned datasets from Benin, Sierra Leone, and Togo to identif
 
     -data/: Data files (ignored in .gitignore)
 
+---
 
+### ✅ TAsk 4 Live Interactive Dashboard  
+**https://solar-challenge-biniyam.streamlit.app**  
+
+### Features
+- **Country selector** (Togo, Benin, Sierra Leone)
+- **Interactive Plotly charts** (boxplots, time series)
+- **Real-time summary statistics**
+- **Investment ranking** by mean GHI
+- **Strategic recommendation panel**
+
+> Built with **modular design**, **docstrings**, and **professional UI** — exactly what senior roles expect.
+
+---
+
+## conclusion
+This 10 Academy Solar Challenge project is a complete, production-ready analytics pipeline that turns raw solar radiation data from Benin, Sierra Leone, and Togo into actionable insights for MoonLight Energy Solutions. I utilized data profiling, outlier detection, and statistical validation (ANOVA p < 1e-100) to establish that Togo has the highest and most stable solar potential (median GHI 260 W/m²), making it ideal for a 50 MW pilot farm in Q1 2026. My background in Economics and experience in financial services allowed me to deliver both technical excellence and significant business impact. This repository showcases my ability to lead end-to-end analytics projects, with clean architecture, comprehensive documentation, and a live Streamlit dashboard.
+---
