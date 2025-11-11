@@ -126,20 +126,21 @@ To synthesize the cleaned datasets from Benin, Sierra Leone, and Togo to identif
 
 ---
 
-### ✅ TAsk 4 Live Interactive Dashboard  
-**https://solar-challenge-biniyam.streamlit.app**  
+### ✅ Task 4: Live Interactive Dashboard
+***Explore the dashboard here: Live Interactive Dashboard***
 
-### Features
-- **Country selector** (Togo, Benin, Sierra Leone)
-- **Interactive Plotly charts** (boxplots, time series)
-- **Real-time summary statistics**
-- **Investment ranking** by mean GHI
-- **Strategic recommendation panel**
-
-> Built with **modular design**, **docstrings**, and **professional UI** — exactly what senior roles expect.
+**Features**
+-Country Selector: Choose from Togo, Benin, or Sierra Leone.
+-Interactive Plotly Charts: Includes boxplots and time series visualizations.
+-Real-Time Summary Statistics: Instant insights at your fingertips.
+-Investment Ranking: Displays countries ranked by mean GHI.
+-Strategic Recommendation Panel: Provides actionable insights.
+-This dashboard is built with a modular design, complete docstrings, and a professional -UI—catering to the expectations of senior roles.
 
 ---
 
-## conclusion
-This 10 Academy Solar Challenge project is a complete, production-ready analytics pipeline that turns raw solar radiation data from Benin, Sierra Leone, and Togo into actionable insights for MoonLight Energy Solutions. I utilized data profiling, outlier detection, and statistical validation (ANOVA p < 1e-100) to establish that Togo has the highest and most stable solar potential (median GHI 260 W/m²), making it ideal for a 50 MW pilot farm in Q1 2026. My background in Economics and experience in financial services allowed me to deliver both technical excellence and significant business impact. This repository showcases my ability to lead end-to-end analytics projects, with clean architecture, comprehensive documentation, and a live Streamlit dashboard.
+## Conclusion
+
+  This 10 Academy Solar Challenge project is a complete, production-ready analytics pipeline that turns raw solar radiation data from Benin, Sierra Leone, and Togo into actionable insights for MoonLight Energy Solutions. I utilized data profiling, outlier detection, and statistical validation (ANOVA p < 1e-100) to establish that Togo has the highest and most stable solar potential (median GHI 260 W/m²), making it ideal for a 50 MW pilot farm in Q1 2026. My background in Economics and experience in financial services allowed me to deliver both technical excellence and significant business impact. This repository showcases my ability to lead end-to-end analytics projects, with clean architecture, comprehensive documentation, and a live Streamlit dashboard.
+
 ---
