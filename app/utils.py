@@ -3,8 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
-import streamlit as st  
-  # YES
+import streamlit as st  # YES
 
 # === CONFIG (ONLY ONCE!) ===
 warnings.filterwarnings('ignore')
@@ -20,9 +19,9 @@ def load_clean_country(path: str, country_name: str) -> pd.DataFrame:
 @st.cache_data
 def load_all_data():
     try:
-        benin = load_clean_country('../data/benin-malanville.csv', 'Benin')
-        sierraleone = load_clean_country('../data/sierraleone_clean.csv', 'Sierra Leone')
-        togo = load_clean_country('../data/togo_clean.csv', 'Togo')
+        benin = load_clean_country('..\data/benin_clean.csv', 'Benin')
+        sierraleone = load_clean_country('..\data/sierraleone_clean.csv', 'Sierra Leone')
+        togo = load_clean_country('..\data/togo_clean.csv', 'Togo')
 
         df = pd.concat([benin, sierraleone, togo], ignore_index=True)
 
@@ -48,7 +47,7 @@ def load_all_data():
         else:
             df['GHI'] = pd.to_numeric(df['GHI'], errors='coerce')
 
-        df = df.dropna(subset=['GHI', 'Country-', 'Region'])
+        df = df.dropna(subset=['GHI', 'Country', 'Region'])
         return df
 
     except Exception as e:
@@ -78,6 +77,5 @@ def get_top_regions_table(data, top_n=5):
     avg = avg.rename(columns={'GHI': 'Average GHI'})
     avg['Average GHI'] = avg['Average GHI'].round(2)
     return avg
-
 
 
