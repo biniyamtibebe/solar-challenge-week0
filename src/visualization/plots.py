@@ -1,3 +1,58 @@
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+import warnings
+import os
+warnings.filterwarnings('ignore')
+sns.set(style="whitegrid", rc={"figure.figsize": (12, 6)})
+
+def load_clean_country(path: str, country_name: str) -> pd.DataFrame:
+
+    """
+    Load a cleaned CSV and add country identifier.
+    
+    Parameters
+    ----------
+    path : str
+        Relative path to the cleaned CSV file
+    country_name : str
+        Name of the country (benin, sierraleon, and togo)
+    """
+    
+    # Load the CSV file into a DataFrame
+    df = pd.read_csv(path, encoding='latin-1')
+    
+    # Add country column
+    df['Country'] = country_name
+    
+    return df
+
+# Load data for each country
+benin = load_clean_country(r'..\data\benin_clean.csv', 'Benin')
+sierraleone = load_clean_country(r'..\data\sierraleone_clean.csv', 'sierraleone')
+togo = load_clean_country(r'..\data\togo_clean.csv', 'Togo')
+
+df_all = pd.concat([benin, sierraleone, togo], ignore_index=True)
+
+# Print the shapes of the loaded DataFrames
+print(f"Loaded: Benin {benin.shape}, SierraLeone {sierraleone.shape}, Togo {togo.shape}")
+"""
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with an added 'Country' column and parsed Timestamp.
+    """
+    # Initialize dictionary to hold country data
+df_all = pd.concat([benin, sierraleone, togo], ignore_index=True)
+df_all['Timestamp'] = pd.to_datetime(df_all['Timestamp'])
+print(f"Combined dataset: {df_all.shape}")
+#-----------------------------------------------------
+
+
+
 # 3. METRIC COMPARISON – BOXPLOTS
 # -----------------------------------------------------
 
@@ -28,16 +83,18 @@ def plot_metric_distribution(df: pd.DataFrame, metrics: list) -> None:
         plt.ylabel(f'{metric} (W/m²)')
         plt.xlabel('Country')
         plt.grid(True, alpha=0.3)
-        plt.show()
-
 # Example usage
 if __name__ == "__main__":
-    # Load your data here (replace with your actual data loading code)
-    df_all = pd.read_csv('path/to/your/data.csv', encoding='latin-1')
-    
+   
     metrics = ['GHI', 'DNI', 'DHI']
-    plot_metric_distribution(df_all, metrics)
-    # 6. RANKING BAR CHART (BONUS)
+    
+     #Show the plots
+plt.tight_layout()
+plt.savefig('../notebooks/compare_countries.ipynb', format='png', dpi=200)
+plt.close()
+plt.show()
+
+# 6. RANKING BAR CHART (BONUS)
 # -----------------------------------------------------
 
 import matplotlib.pyplot as plt
@@ -78,11 +135,12 @@ def plot_ranking_bar_chart(df: pd.DataFrame, metric: str) -> None:
     # Set y-axis limits and display grid
     plt.ylim(0, max(means.values) * 1.15)
     plt.grid(True, axis='y', alpha=0.3)
-    
-    # Show the plot
-    plt.show()
-
 # Example usage
 if __name__ == "__main__":
     # Assume df_all is already defined and loaded with the necessary data
     plot_ranking_bar_chart(df_all, 'GHI')
+# Show the plots
+plt.tight_layout()
+plt.savefig('../notebooks/data/Compare_countries_graph.png', format='png', dpi=200)
+plt.close()
+plt.show()
