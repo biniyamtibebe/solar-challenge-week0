@@ -135,12 +135,12 @@ Explore the dashboard here: http://localhost:8503/
 
 **Features**
 
-  -Country Selector: Choose from Togo, Benin, or Sierra Leone.
-  -Interactive Plotly Charts: Includes boxplots and time series visualizations.
-  -Real-Time Summary Statistics: Instant insights at your fingertips.
-  -Investment Ranking: Displays countries ranked by mean GHI.
-  -Strategic Recommendation Panel: Provides actionable insights.
-  -This dashboard is built with a modular design, complete docstrings, and a professional -UI—catering to the expectations of senior roles.
+  - Country Selector: Choose from Togo, Benin, or Sierra Leone.
+  - Interactive Plotly Charts: Includes boxplots and time series visualizations.
+  - Real-Time Summary Statistics: Instant insights at your fingertips.
+  - Investment Ranking: Displays countries ranked by mean GHI.
+  - Strategic Recommendation Panel: Provides actionable insights.
+  - This dashboard is built with a modular design, complete docstrings, and a professional -UI—catering to the expectations of senior roles.
 
 ---
 
