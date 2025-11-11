@@ -1,67 +1,83 @@
-"""
-Streamlit Dashboard Utilities
-Author: Biniyam Tibebe Solomon
-Date: 2025-11-10
-"""
-
+# app/utils.py
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+import streamlit as st  
+  # YES
 
-def load_data(country: str) -> pd.DataFrame:
-    """
-    Load cleaned CSV for the selected country.
-    
-    Parameters
-    ----------
-    country : str
-        One of 'Benin', 'Sierra Leone', 'Togo'.
-    
-    Returns
-    -------
-    pd.DataFrame
-        Cleaned data with Timestamp parsed.
-    """
-    path_map = {
-        'Benin': '../data/benin_clean.csv',
-        'Sierra Leone': '../data/sierraleone_clean.csv',
-        'Togo': '../data/togo_clean.csv'
-    }
-    
-    if country not in path_map:
-        raise ValueError("Country must be one of 'Benin', 'Sierra Leone', or 'Togo'.")
-    
-    df = pd.read_csv(path_map[country])
-    df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+# === CONFIG (ONLY ONCE!) ===
+warnings.filterwarnings('ignore')
+sns.set(style="whitegrid", rc={"figure.figsize": (12, 6)})
+
+
+def load_clean_country(path: str, country_name: str) -> pd.DataFrame:
+    df = pd.read_csv(path, encoding='latin-1')
+    df['Country'] = country_name
     return df
 
-def create_boxplot(df: pd.DataFrame, metric: str):
-    """Create an interactive boxplot using Plotly."""
-    fig = px.box(
-        df, 
-        y=metric, 
-        color="Country",
-        title=f"{metric} Distribution",
-        labels={metric: f"{metric} (W/m²)"}
-    )
-    fig.update_layout(height=500)
-    return fig
 
-def create_time_series(df: pd.DataFrame, metric: str):
-    """Create a daily average time series plot."""
-    daily = df.set_index('Timestamp')[metric].resample('D').mean().reset_index()
-    fig = px.line(
-        daily, 
-        x='Timestamp', 
-        y=metric,
-        title=f"Daily {metric} Trend",
-        labels={metric: f"{metric} (W/m²)"}
-    )
-    fig.update_layout(height=500)
-    return fig
+@st.cache_data
+def load_all_data():
+    try:
+        benin = load_clean_country('../data/benin-malanville.csv', 'Benin')
+        sierraleone = load_clean_country('../data/sierraleone_clean.csv', 'Sierra Leone')
+        togo = load_clean_country('../data/togo_clean.csv', 'Togo')
 
-def get_summary_stats(df: pd.DataFrame):
-    """Return a formatted summary statistics table."""
-    stats = df[['GHI', 'DNI', 'DHI']].agg(['mean', 'median', 'std']).round(1)
-    stats.columns = ['Mean', 'Median', 'Standard Deviation']
-    return stats
+        df = pd.concat([benin, sierraleone, togo], ignore_index=True)
+
+        df['Country'] = df['Country'].replace({
+            'sierraleone': 'Sierra Leone',
+            'Togo': 'Togo',
+            'Benin': 'Benin'
+        })
+
+        region_map = {
+            'Benin': 'West Africa',
+            'Sierra Leone': 'West Africa',
+            'Togo': 'West Africa'
+        }
+        df['Region'] = df['Country'].map(region_map)
+
+        if 'GHI' not in df.columns:
+            ghi_cols = [c for c in df.columns if 'ghi' in c.lower() or 'hunger' in c.lower()]
+            if ghi_cols:
+                df['GHI'] = pd.to_numeric(df[ghi_cols[0]], errors='coerce')
+            else:
+                raise ValueError("No GHI column found")
+        else:
+            df['GHI'] = pd.to_numeric(df['GHI'], errors='coerce')
+
+        df = df.dropna(subset=['GHI', 'Country-', 'Region'])
+        return df
+
+    except Exception as e:
+        st.error(f"Data load error: {e}")
+        return pd.DataFrame()
+
+
+def create_ghi_boxplot(data, countries):
+    filtered = data[data['Country'].isin(countries)]
+    if filtered.empty:
+        return None
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x='Country', y='GHI', data=filtered, palette="Set2")
+    plt.title('GHI Distribution by Country', fontsize=16)
+    plt.xlabel('Country')
+    plt.ylabel('GHI Score')
+    plt.xticks(rotation=15)
+    return plt.gcf()
+
+
+def get_top_regions_table(data, top_n=5):
+    avg = (data.groupby(['Region', 'Country'])['GHI']
+           .mean()
+           .reset_index()
+           .sort_values('GHI')
+           .head(top_n))
+    avg = avg.rename(columns={'GHI': 'Average GHI'})
+    avg['Average GHI'] = avg['Average GHI'].round(2)
+    return avg
+
+
+
